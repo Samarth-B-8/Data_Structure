@@ -1,0 +1,58 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h> 
+ 
+struct Student { 
+    char name[30]; 
+    int reg; 
+    int m1, m2, m3; 
+    float avg; 
+}; 
+ 
+void read(struct Student *s, int n) { 
+    for(int i=0;i<n;i++) { 
+        printf("Enter Name, RegNo, 3 Marks:\n"); 
+        scanf("%s %d %d %d %d", s[i].name, &s[i].reg, &s[i].m1, &s[i].m2, &s[i].m3); 
+    } 
+} 
+ 
+void calculate(struct Student *s, int n) { 
+    for(int i=0;i<n;i++) { 
+        int a=s[i].m1, b=s[i].m2, c=s[i].m3; 
+        int best = a+b+c - (a<b?(a<c?a:c):(b<c?b:c)); 
+        s[i].avg = best/2.0; 
+    } 
+} 
+ 
+void sort(struct Student *s, int n) { 
+    struct Student temp; 
+    for(int i=0;i<n-1;i++) 
+        for(int j=i+1;j<n;j++) 
+            if(s[i].reg > s[j].reg) { 
+                temp=s[i]; s[i]=s[j]; s[j]=temp; 
+            } 
+} 
+ 
+void display(struct Student *s, int n) { 
+    for(int i=0;i<n;i++) 
+        printf("%s %d %.2f\n", s[i].name, s[i].reg, s[i].avg); 
+} 
+ 
+int main() { 
+    int n,ch; 
+    printf("Enter number of students: "); 
+    scanf("%d",&n); 
+    struct Student *s = (struct Student*)malloc(n*sizeof(struct Student)); 
+ 
+    while(1) { 
+        printf("\n1.Read 2.Calculate Avg 3.Sort 4.Display 5.Exit\n"); 
+        scanf("%d",&ch); 
+        switch(ch) { 
+            case 1: read(s,n); break; 
+            case 2: calculate(s,n); break; 
+            case 3: sort(s,n); break; 
+            case 4: display(s,n); break; 
+            case 5: exit(0); 
+        } 
+    } 
+} 
