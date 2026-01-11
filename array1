@@ -1,0 +1,169 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+ 
+int *a; 
+int n; 
+ 
+/* Function declarations */ 
+void insertByPosition(); 
+void deleteByKey(); 
+void searchByPosition(); 
+void reverseArray(); 
+void display(); 
+ 
+int main() 
+{ 
+    int choice; 
+ 
+    printf("Enter number of elements: "); 
+    scanf("%d", &n); 
+ 
+    a = (int *)malloc(n * sizeof(int)); 
+ 
+    if (a == NULL) 
+    { 
+        printf("Memory allocation failed\n"); 
+        return 0; 
+    } 
+ 
+    printf("Enter %d elements:\n", n); 
+    for (int i = 0; i < n; i++) 
+        scanf("%d", &a[i]); 
+ 
+    printf("\n---- MENU ----\n"); 
+    printf("1. Insert by Position\n"); 
+    printf("2. Delete by Key\n"); 
+    printf("3. Search by Position\n"); 
+    printf("4. Reverse Array\n"); 
+    printf("5. Exit\n"); 
+ 
+    while (1) 
+    { 
+        printf("\nEnter your choice: "); 
+        scanf("%d", &choice); 
+ 
+        switch (choice) 
+        { 
+        case 1: 
+            insertByPosition(); 
+            display(); 
+            break; 
+ 
+        case 2: 
+            deleteByKey(); 
+            display(); 
+            break; 
+ 
+        case 3: 
+            searchByPosition(); 
+            break; 
+ 
+        case 4: 
+            reverseArray(); 
+            display(); 
+            break; 
+ 
+        case 5: 
+            free(a); 
+            exit(0); 
+ 
+        default: 
+            printf("Invalid choice\n"); 
+        } 
+    } 
+} 
+ 
+/* Insert element at given position */ 
+void insertByPosition() 
+{ 
+    int pos, ele; 
+    int *temp; 
+ 
+    printf("Enter position: "); 
+    scanf("%d", &pos); 
+ 
+    printf("Enter element: "); 
+    scanf("%d", &ele); 
+ 
+    if (pos < 1 || pos > n + 1) 
+    { 
+        printf("Invalid position\n"); 
+        return; 
+    } 
+ 
+    temp = (int *)malloc((n + 1) * sizeof(int)); 
+ 
+    for (int i = 0; i < pos - 1; i++) 
+        temp[i] = a[i]; 
+ 
+    temp[pos - 1] = ele; 
+ 
+    for (int i = pos - 1; i < n; i++) 
+        temp[i + 1] = a[i]; 
+ 
+    free(a); 
+    a = temp; 
+    n++; 
+} 
+ 
+/* Delete element by key */ 
+void deleteByKey() 
+{ 
+    int key, found = 0; 
+ 
+    printf("Enter key to delete: "); 
+    scanf("%d", &key); 
+ 
+    for (int i = 0; i < n; i++) 
+    { 
+        if (a[i] == key) 
+        { 
+            for (int j = i; j < n - 1; j++) 
+                a[j] = a[j + 1]; 
+            n--; 
+            found = 1; 
+            break; 
+        } 
+    } 
+ 
+    if (!found) 
+        printf("Key not found\n"); 
+} 
+ 
+/* Search element by position */ 
+void searchByPosition() 
+{ 
+    int pos; 
+ 
+    printf("Enter position to search: "); 
+    scanf("%d", &pos); 
+ 
+    if (pos < 1 || pos > n) 
+    { 
+        printf("Invalid position\n"); 
+        return; 
+    } 
+ 
+    printf("Element at position %d is %d\n", pos, a[pos - 1]); 
+} 
+ 
+/* Reverse array */ 
+void reverseArray() 
+{ 
+    int temp; 
+    for (int i = 0; i < n / 2; i++) 
+    { 
+        temp = a[i]; 
+        a[i] = a[n - i - 1]; 
+        a[n - i - 1] = temp; 
+    } 
+} 
+ 
+/* Display array */ 
+void display() 
+{ 
+    printf("Array elements:\n"); 
+    for (int i = 0; i < n; i++) 
+        printf("%d ", a[i]); 
+    printf("\n"); 
+}
