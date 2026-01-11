@@ -1,0 +1,142 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+ 
+struct node { 
+    int data; 
+    struct node *next; 
+}; 
+ 
+struct node *head = NULL; 
+ 
+void display() { 
+    struct node *temp = head; 
+    if (temp == NULL) { 
+        printf("List is empty\n"); 
+        return; 
+    } 
+    while (temp != NULL) { 
+        printf("%d ", temp->data); 
+        temp = temp->next; 
+    } 
+    printf("\n"); 
+} 
+ 
+void insert_front() { 
+    int x; 
+    printf("Enter value: "); 
+    scanf("%d", &x); 
+ 
+    struct node *newnode = (struct node *)malloc(sizeof(struct node)); 
+    newnode->data = x; 
+    newnode->next = head; 
+    head = newnode; 
+ 
+    display(); 
+} 
+ 
+void insert_position() { 
+    int x, pos; 
+    printf("Enter value: "); 
+    scanf("%d", &x); 
+    printf("Enter position: "); 
+    scanf("%d", &pos); 
+ 
+    struct node *newnode = (struct node *)malloc(sizeof(struct node)); 
+    newnode->data = x; 
+ 
+    if (pos == 1) { 
+        newnode->next = head; 
+        head = newnode; 
+        display(); 
+        return; 
+    } 
+ 
+    struct node *temp = head; 
+    for (int i = 1; i < pos - 1 && temp != NULL; i++) { 
+        temp = temp->next; 
+    } 
+ 
+    if (temp == NULL) { 
+        printf("Invalid position\n"); 
+        free(newnode); 
+        return; 
+    } 
+ 
+    newnode->next = temp->next; 
+    temp->next = newnode; 
+ 
+    display(); 
+} 
+ 
+void delete_key() { 
+    int key; 
+    printf("Enter key: "); 
+    scanf("%d", &key); 
+ 
+    struct node *temp = head, *prev = NULL; 
+ 
+    if (temp != NULL && temp->data == key) { 
+        head = temp->next; 
+        free(temp); 
+        display(); 
+        return; 
+    } 
+ 
+    while (temp != NULL && temp->data != key) { 
+        prev = temp; 
+        temp = temp->next; 
+    } 
+ 
+    if (temp == NULL) { 
+        printf("Key not found\n"); 
+        return; 
+    } 
+ 
+    prev->next = temp->next; 
+    free(temp); 
+ 
+    display(); 
+} 
+ 
+void search_position() { 
+    int pos, count = 1; 
+    printf("Enter position: "); 
+    scanf("%d", &pos); 
+ 
+    struct node *temp = head; 
+ 
+    while (temp != NULL) { 
+        if (count == pos) { 
+            printf("Element at position %d is %d\n", pos, temp->data); 
+            return; 
+        } 
+        temp = temp->next; 
+        count++; 
+    } 
+ 
+    printf("Position not found\n"); 
+} 
+ 
+int main() { 
+    int choice; 
+ 
+    printf("1.Insert Front\n"); 
+    printf("2.Insert at Position\n"); 
+    printf("3.Delete by Key\n"); 
+    printf("4.Search by Position\n"); 
+    printf("5.Exit\n"); 
+ 
+    while (1) { 
+        printf("Enter choice: "); 
+        scanf("%d", &choice); 
+ 
+        switch (choice) { 
+            case 1: insert_front(); break; 
+            case 2: insert_position(); break; 
+            case 3: delete_key(); break; 
+            case 4: search_position(); break; 
+            case 5: return 0; 
+            default: printf("Invalid choice\n"); 
+        } 
+    }
+}
