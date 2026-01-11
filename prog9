@@ -1,0 +1,145 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+ 
+struct Node { 
+    int data; 
+    struct Node* next; 
+}; 
+ 
+// Function prototypes 
+void insertByOrder(struct Node* head, int data); 
+void deleteFront(struct Node* head); 
+void deleteRear(struct Node* head); 
+void reverseList(struct Node* head); 
+void display(struct Node* head); 
+ 
+int main() { 
+    struct Node* head = (struct Node*)malloc(sizeof(struct Node)); 
+    head->next = head; // Initialize circular header 
+ 
+    int choice, data; 
+ 
+    // Display menu only once 
+    printf("Menu:\n"); 
+    printf("1. Insert by order\n"); 
+    printf("2. Delete front\n"); 
+    printf("3. Delete rear\n"); 
+    printf("4. Reverse list\n"); 
+    printf("5. Exit\n"); 
+ 
+    while (1) { 
+        printf("\nEnter your choice: "); 
+        scanf("%d", &choice); 
+ 
+        switch (choice) { 
+            case 1: 
+                printf("Enter data to insert: "); 
+                scanf("%d", &data); 
+                insertByOrder(head, data); 
+                display(head); 
+                break; 
+            case 2: 
+                deleteFront(head); 
+                display(head); 
+                break; 
+            case 3: 
+                deleteRear(head); 
+                display(head); 
+                break; 
+            case 4: 
+                reverseList(head); 
+                display(head); 
+                break; 
+            case 5: 
+                exit(0); 
+            default: 
+                printf("Invalid choice.\n"); 
+        } 
+    } 
+    return 0; 
+} 
+ 
+// Insert node in ascending order 
+void insertByOrder(struct Node* head, int data) { 
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node)); 
+    newNode->data = data; 
+ 
+    struct Node* temp = head; 
+    while (temp->next != head && temp->next->data < data) { 
+        temp = temp->next; 
+    } 
+ 
+    newNode->next = temp->next; 
+    temp->next = newNode; 
+ 
+    printf("%d inserted in order.\n", data); 
+} 
+ 
+// Delete front node 
+void deleteFront(struct Node* head) { 
+    if (head->next == head) { 
+        printf("List is empty. Cannot delete front.\n"); 
+        return; 
+    } 
+ 
+    struct Node* temp = head->next; 
+    head->next = temp->next; 
+    printf("Deleted front node (data = %d).\n", temp->data); 
+    free(temp); 
+} 
+ 
+// Delete rear node 
+void deleteRear(struct Node* head) { 
+    if (head->next == head) { 
+        printf("List is empty. Cannot delete rear.\n"); 
+        return; 
+    } 
+ 
+    struct Node* temp = head; 
+    while (temp->next->next != head) { // Traverse to second last 
+        temp = temp->next; 
+    } 
+ 
+    struct Node* toDelete = temp->next; 
+    temp->next = head; 
+    printf("Deleted rear node (data = %d).\n", toDelete->data); 
+    free(toDelete); 
+} 
+ 
+// Reverse circular linked list 
+void reverseList(struct Node* head) { 
+    if (head->next == head || head->next->next == head) { 
+        printf("List reversed.\n"); 
+        return; // Empty or single node 
+    } 
+ 
+    struct Node* prev = head; 
+    struct Node* curr = head->next; 
+    struct Node* next; 
+ 
+    do { 
+        next = curr->next; 
+        curr->next = prev; 
+        prev = curr; 
+        curr = next; 
+    } while (curr != head); 
+ 
+    head->next = prev; 
+    printf("List reversed.\n"); 
+} 
+ 
+// Display list 
+void display(struct Node* head) { 
+    if (head->next == head) { 
+        printf("List is empty.\n"); 
+        return; 
+    } 
+ 
+    struct Node* temp = head->next; 
+    printf("List: "); 
+    while (temp != head) { 
+        printf("%d ", temp->data); 
+        temp = temp->next; 
+    } 
+    printf("\n"); 
+}
