@@ -1,0 +1,161 @@
+#include <stdio.h> 
+#include <ctype.h> 
+ 
+#define MAX 50 
+ 
+/* Stack for infix to postfix */ 
+struct stack1 { 
+    char data[MAX]; 
+    int top; 
+}; 
+ 
+/* Stack for postfix evaluation */ 
+struct stack2 { 
+    int data[MAX]; 
+    int top; 
+}; 
+ 
+/* -------- Stack1 functions -------- */ 
+void init1(struct stack1 *s) { 
+    s->top = -1; 
+} 
+ 
+int empty1(struct stack1 *s) { 
+    return s->top == -1; 
+} 
+ 
+void push1(struct stack1 *s, char x) { 
+    s->data[++s->top] = x; 
+} 
+ 
+char pop1(struct stack1 *s) { 
+    if (empty1(s)) 
+        return '\0'; 
+    return s->data[s->top--]; 
+} 
+ 
+char peek1(struct stack1 *s) { 
+    if (empty1(s)) 
+        return '\0'; 
+    return s->data[s->top]; 
+} 
+ 
+/* -------- Stack2 functions -------- */ 
+void init2(struct stack2 *s) { 
+    s->top = -1; 
+} 
+ 
+int empty2(struct stack2 *s) { 
+    return s->top == -1; 
+} 
+ 
+void push2(struct stack2 *s, int x) { 
+    s->data[++s->top] = x; 
+} 
+ 
+int pop2(struct stack2 *s) { 
+    if (empty2(s)) 
+        return 0; 
+    return s->data[s->top--]; 
+} 
+ 
+/* Operator priority */ 
+int priority(char op) { 
+    if (op == '+' || op == '-') return 1; 
+    if (op == '*' || op == '/') return 2; 
+    return 0; 
+} 
+ 
+/* Infix to Postfix */ 
+void infixToPostfix(char infix[], char postfix[]) { 
+    struct stack1 s; 
+    int i = 0, j = 0; 
+    char ch; 
+ 
+    init1(&s); 
+ 
+    while ((ch = infix[i++]) != '\0') { 
+        if (isalnum(ch)) { 
+            postfix[j++] = ch; 
+        } 
+        else if (ch == '(') { 
+            push1(&s, ch); 
+        } 
+        else if (ch == ')') { 
+            while (!empty1(&s) && peek1(&s) != '(') 
+                postfix[j++] = pop1(&s); 
+            pop1(&s); 
+        } 
+        else { 
+            while (!empty1(&s) && priority(peek1(&s)) >= priority(ch)) 
+                postfix[j++] = pop1(&s); 
+            push1(&s, ch); 
+        } 
+    } 
+ 
+    while (!empty1(&s)) 
+        postfix[j++] = pop1(&s); 
+ 
+    postfix[j] = '\0'; 
+} 
+ 
+/* Evaluate Postfix (digits only) */ 
+int evaluatePostfix(char postfix[]) { 
+    struct stack2 s; 
+    int i = 0, a, b; 
+ 
+    init2(&s); 
+ 
+    while (postfix[i] != '\0') { 
+        if (isdigit(postfix[i])) { 
+            push2(&s, postfix[i] - '0'); 
+        } 
+        else { 
+            if (empty2(&s)) return 0; 
+            b = pop2(&s); 
+            if (empty2(&s)) return 0; 
+            a = pop2(&s); 
+ 
+            switch (postfix[i]) { 
+                case '+': push2(&s, a + b); break; 
+                case '-': push2(&s, a - b); break; 
+                case '*': push2(&s, a * b); break; 
+                case '/': push2(&s, a / b); break; 
+            } 
+        } 
+        i++; 
+    } 
+ 
+    return pop2(&s); 
+} 
+ 
+/* -------- Main -------- */ 
+int main() { 
+    char infix[MAX], postfix[MAX]; 
+    int choice, result; 
+ 
+    printf("1 Infix to Postfix\n"); 
+    printf("2 Evaluate Postfix\n"); 
+    printf("3 Exit\n"); 
+ 
+    while (1) { 
+        printf("Enter your choice: "); 
+        scanf("%d", &choice); 
+ 
+        if (choice == 1) { 
+            printf("Enter infix expression: "); 
+            scanf("%s", infix); 
+            infixToPostfix(infix, postfix); 
+            printf("Postfix expression: %s\n", postfix); 
+        } 
+        else if (choice == 2) { 
+            printf("Enter postfix expression: "); 
+            scanf("%s", postfix); 
+            result = evaluatePostfix(postfix); 
+            printf("Result: %d\n", result); 
+        } 
+        else if (choice == 3) { 
+            return 0; 
+        } 
+    } 
+} 
